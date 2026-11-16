@@ -1,0 +1,42 @@
+# ---- data, images and models: large or regenerated ----
+data/
+*.npy
+*.npz
+*.parquet
+*.fits
+*.fits.gz
+*.fz
+*.tar
+*.zip
+*.jpg
+*.jpeg
+*.pt
+*.pth
+*.ckpt
+*.joblib
+*.safetensors
+
+# large prediction tables
+tables/predictions*.csv
+
+# ---- images: ignore all, except figures you want to show ----
+*.png
+!figures/*.png
+
+# ---- Python ----
+__pycache__/
+*.pyc
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# ---- editors and OS ----
+.vscode/
+.idea/
+.DS_Store
+
+# ---- secrets ----
+.env
+*credentials*
+*token*
