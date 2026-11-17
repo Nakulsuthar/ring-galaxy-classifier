@@ -44,6 +44,11 @@ SIZE_NAMES = ["700-1500", "1500-3000", ">3000"]
 SPLIT = {"train": 0.70, "val": 0.15, "test": 0.15}
 SEED = 42 
 
+# model
+MODEL_NAME = "hf-hub:mwalmsley/zoobot-encoder-euclid-convnext-base"
+IMG_SIZE   = 224
+MEAN, STD  = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]   # ImageNet normalisation, same as the E1024 embeddings
+
 # training 
 # model is ConvNeXt-Base which is pretrained on galazy zoo euclid already + a new linear head (1024 -> 1) giving p(ring)
 
