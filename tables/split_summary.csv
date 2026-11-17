@@ -1,0 +1,11 @@
+split,label,700-1500,1500-3000,>3000,All
+test,no,97,37,60,194
+test,ring,28,47,97,172
+test,spiral,1,4,30,35
+train,no,454,170,277,901
+train,ring,134,216,451,801
+train,spiral,7,21,137,165
+val,no,97,36,59,192
+val,ring,29,46,97,172
+val,spiral,2,5,29,36
+All,,849,582,1237,2668
