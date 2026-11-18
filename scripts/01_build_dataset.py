@@ -52,7 +52,6 @@ print(f"no area: -{n0-n1} | no image -{n1-n2} | area < {C.MIN_AREA}: -{n2-n3} | 
 df["size_bin"] = pd.cut(df["area"], bins=C.SIZE_BINS, labels=C.SIZE_NAMES, right=False).astype(str)
 
 # stratfied split
-# stratfied split 
 # this basically makes 9 boxes like this 
 #  seg are       700–1500 px   1500–3000 px   >3000 px
 #  ring            box 1          box 2         box 3
@@ -84,3 +83,4 @@ print("\nring fraction per split:\n", df.groupby("split")["y"].mean().round(3))
 print("\nmedian area by label:\n", df.groupby("label")["area"].median().round(0))
 print(f"\nsaved {C.DATA / 'splits.csv'}")
 
+# AUC = the probability that a randomly chosen ring gets a higher P(ring) score than a randomly chosen non-ring. 
