@@ -1,0 +1,18 @@
+group,subset,n_ring,n_neg,auc,lo95,hi95
+all,model,172,229,0.959,0.939,0.975
+all,area only,172,229,0.627,0.581,0.678
+size bin,700-1500,28,98,0.989,0.97,1.0
+size bin,1500-3000,47,41,0.937,0.873,0.985
+size bin,>3000,97,90,0.932,0.894,0.961
+rings vs,spiral,172,35,0.964,0.92,0.994
+rings vs,other,172,66,0.998,0.994,1.0
+rings vs,edge-on,172,38,1.0,1.0,1.0
+rings vs,smooth,172,6,1.0,1.0,1.0
+rings vs,merger,172,36,1.0,0.998,1.0
+rings vs,unspecified,172,48,0.832,0.767,0.896
+source,desi_seeds,11,6,0.879,0.673,1.0
+source,desi_seeds_k3,127,41,0.889,0.825,0.944
+source,morph_neg,0,162,,,
+source,seed2_k100,2,10,0.85,0.572,1.0
+source,seed5_k100,14,0,,,
+source,seed5_k300,18,10,0.622,0.402,0.818
