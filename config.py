@@ -44,6 +44,20 @@ SIZE_NAMES = ["700-1500", "1500-3000", ">3000"]
 SPLIT = {"train": 0.70, "val": 0.15, "test": 0.15}
 SEED = 42 
 
+# tasks
+# "ring"    = ring (1) vs non ring (0)    --> my first fine tuning run 
+# "ringtype"   = inner (1) vs outer (0)  --> second stage model 
+TASK = "ringtype"
+TAG = "" if TASK == "ring" else f"_{TASK}"          # "" keeps the original ring-run file names
+
+
+RING_SPLITS_PATH = DATA / "splits.csv"           # split from the ring run (ringtype reuses it)
+SPLITS_PATH = DATA / f"splits{TAG}.csv"          # splits.csv or splits_ringtype.csv
+MODEL_PATH  = DATA / f"best_model{TAG}.pt"       # best_model.pt or best_model_ringtype.pt
+LOG_PATH    = TABLES / f"train_log{TAG}.csv"
+INIT_FROM   = DATA / "best_model.pt" if TASK == "ringtype" else None   # start from the ring model
+
+
 # model
 MODEL_NAME = "hf-hub:mwalmsley/zoobot-encoder-euclid-convnext-base"
 IMG_SIZE   = 224
