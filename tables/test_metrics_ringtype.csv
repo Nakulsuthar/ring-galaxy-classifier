@@ -1,0 +1,11 @@
+group,subset,n_ring,n_neg,auc,lo95,hi95
+all,model,104,65,0.886,0.834,0.932
+all,area only,104,65,0.801,0.728,0.873
+size bin,700-1500,7,21,0.878,0.728,0.991
+size bin,1500-3000,18,28,0.865,0.746,0.952
+size bin,>3000,79,16,0.865,0.752,0.948
+source,desi_seeds,9,2,0.833,0.556,1.0
+source,desi_seeds_k3,93,34,0.846,0.777,0.914
+source,seed2_k100,2,0,,,
+source,seed5_k100,0,12,,,
+source,seed5_k300,0,17,,,
