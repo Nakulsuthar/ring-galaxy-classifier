@@ -8,6 +8,12 @@ Phase 2: unfreeze last block + head which has 27 M weights  (LR_FINE, EPOCHS_FIN
 Loss is weighted so rings and non rings count equally inside each size bin, 
 so "bigger = ring" gives the model no information . 
 -> data/best_model.pt, tables/train_log.csv
+
+NEW: TASK switch in config.py
+TASK = "ringtype": inner (1) vs outer (0). Starts from the ring model's weights (INIT_FROM)
+with a fresh head, since the old head answered a different question (ring vs non-ring).
+Size weights now balance inner and outer within each size bin (inner rings are mostly large).
+-> data/best_model{TAG}.pt, tables/train_log{TAG}.csv
 """
 
 import sys, time
@@ -26,9 +32,12 @@ from model import RingNet, set_phase, Galaxies, TRAIN_TF, EVAL_TF
 torch.manual_seed(C.SEED)
 np.random.seed(C.SEED)
 print("device", C.DEVICE)
+print("TASK", C.TASK)
+
+
 
 # data
-df = pd.read_csv(C.DATA / "splits.csv")
+df = pd.read_csv(C.SPLITS_PATH)
 train_df = df[df["split"] == "train"].reset_index(drop=True)
 val_df = df[df["split"] == "val"].reset_index(drop=True)
 
@@ -50,6 +59,14 @@ val_loader   = DataLoader(Galaxies(val_df, EVAL_TF), batch_size=C.BATCH_SIZE,shu
 # model 
 # bce or binary cross entropy is a standard way of measuring how wrong a predicted probability is 
 model = RingNet().to(C.DEVICE)
+# start from the ring model (block 4 already adapted to rings); reset the head,
+# since it was trained for ring vs non-ring, not inner vs outer
+if C.INIT_FROM is not None:
+    ckpt = torch.load(C.INIT_FROM, map_location=C.DEVICE, weights_only=False)
+    model.load_state_dict(ckpt["state_dict"])
+    model.head.reset_parameters()
+    print(f"initialised from {C.INIT_FROM.name} (val AUC {ckpt['val_auc']:.3f}), head reset")
+
 bce = nn.BCEWithLogitsLoss(reduction="none")
 
 def train_epoch(phase, opt):
@@ -106,7 +123,7 @@ for phase, epochs, lr in [(1, C.EPOCHS_HEAD, C.LR_HEAD), (2, C.EPOCHS_FINE, C.LR
         bin_auc = {}
         for b in C.SIZE_NAMES:
             m = (val_df["size_bin"] == b).to_numpy()
-            if m.any():
+            if len(np.unique(ys[m])) == 2:
                 bin_auc[b] = roc_auc_score(ys[m], ps[m])
 
         # log this epoch so it survives any crash 
@@ -114,7 +131,7 @@ for phase, epochs, lr in [(1, C.EPOCHS_HEAD, C.LR_HEAD), (2, C.EPOCHS_FINE, C.LR
                        "val_auc": auc, **{f"auc_{b}": v for b, v in bin_auc.items()},
                        "minutes": (time.time() - t0) / 60}
         log.append(row)
-        pd.DataFrame(log).round(4).to_csv(C.TABLES / "train_log.csv", index=False)
+        pd.DataFrame(log).round(4).to_csv(C.LOG_PATH, index=False)
 
         bins_txt = "  ".join(f"{b}: {v:.3f}" for b, v in bin_auc.items())
         print(f"P{phase} ep{ep:2d} | train {train_loss:.3f} | val {val_loss:.3f} | "
@@ -124,7 +141,7 @@ for phase, epochs, lr in [(1, C.EPOCHS_HEAD, C.LR_HEAD), (2, C.EPOCHS_FINE, C.LR
         if auc > best_auc:
             best_auc, bad = auc, 0 
             torch.save({"state_dict": model.state_dict(), "phase": phase, "epoch": ep,
-                        "val_auc": auc}, C.DATA / "best_model.pt")
+                        "val_auc": auc, "task": C.TASK}, C.MODEL_PATH)
             print("  <- best, saved!!")
         else: 
             bad += 1 
@@ -134,4 +151,4 @@ for phase, epochs, lr in [(1, C.EPOCHS_HEAD, C.LR_HEAD), (2, C.EPOCHS_FINE, C.LR
                 break 
 
 
-print(f"\nbest val AUC {best_auc:.3f}, saved to {C.DATA / "best_model.pt"}")
+print(f"\nbest val AUC {best_auc:.3f}, saved to {C.MODEL_PATH}")
