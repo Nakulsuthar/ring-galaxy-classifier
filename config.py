@@ -47,7 +47,7 @@ SEED = 42
 # tasks
 # "ring"    = ring (1) vs non ring (0)    --> my first fine tuning run 
 # "ringtype"   = inner (1) vs outer (0)  --> second stage model 
-TASK = "ringtype"
+TASK = "ringtype2"
 TAG = "" if TASK == "ring" else f"_{TASK}"          # "" keeps the original ring-run file names
 
 
@@ -55,7 +55,10 @@ RING_SPLITS_PATH = DATA / "splits.csv"           # split from the ring run (ring
 SPLITS_PATH = DATA / f"splits{TAG}.csv"          # splits.csv or splits_ringtype.csv
 MODEL_PATH  = DATA / f"best_model{TAG}.pt"       # best_model.pt or best_model_ringtype.pt
 LOG_PATH    = TABLES / f"train_log{TAG}.csv"
-INIT_FROM   = DATA / "best_model.pt" if TASK == "ringtype" else None   # start from the ring model
+INIT_FROM   = DATA / "best_model.pt" if TASK != "ring" else None   # start from the ring model
+
+Q1_LABELS_PATH = SRC / "tables" / "labels_q1_r1.csv"
+Q1_SPLIT = {"train": 0.60, "val": 0.10, "test_q1": 0.30}
 
 
 # model
@@ -92,5 +95,12 @@ WEIGHT_DECAY = 0.05
 UNFREEZE_BLOCKS = 1 # How many of the 4 ConvNeXt stages to unfreeze stafe 2 
 PATIENCE = 5 # early stopping on validation AUC
 NUM_WORKERS = 0 
+
+# ringtype2: head only. Walmsley et al. (2024): with ~100-1000 labels a linear head on
+# Zoobot features does as well as full fine-tuning. Phase 2 is skipped (0 epochs).
+if TASK == "ringtype2":
+    EPOCHS_HEAD = 10
+    EPOCHS_FINE = 0
+
 
 DEVICE = ("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")

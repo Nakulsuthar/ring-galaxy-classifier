@@ -1,0 +1,10 @@
+split,cls,700-1500,1500-3000,>3000,All
+test,inner,7,18,79,104
+test,outer,21,28,16,65
+test_q1,inner,33,43,40,116
+test_q1,outer,66,25,3,94
+train,inner,90,160,420,670
+train,outer,240,191,105,536
+val,inner,17,22,85,124
+val,outer,45,45,22,112
+All,,519,532,770,1821
