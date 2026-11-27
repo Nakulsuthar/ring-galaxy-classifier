@@ -21,10 +21,10 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import config as C
 
-ROUND = "q1_r1"
+ROUND = "relabel_old"
 CAND = C.DATA / f"candidates_{ROUND}.csv"
 OUT = C.SRC / "tables" / f"labels_{ROUND}.csv"      # next to labels.csv, outside the public repo
-SOURCE = "q1_pred_r1"
+SOURCE = "relabel_old"
 
 #        key: (label,    ring_type, notes)
 KEYS = {"i": ("ring",   "inner",   ""),
